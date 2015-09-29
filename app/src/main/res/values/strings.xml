@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">Задачи ЕНТ и НУ с решениями</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_about">О проекте</string>
+    <string name="action_refresh">Обновить</string>
+    <string name="about_text">Дорогие ученики, абитуриенты. Вы можете отправить нам вопросы, которые вы не смогли решить. Для этого заранее сделайте
+                              фото вопроса и отправьте к нам через приложение. Мы постараемся как можно быстрее решить и опубликовать решение. Удачи вам в экзаменах!
+    </string>
+
+    <!--Buttons-->
+    <string name="nextButtonRus">Вперед</string>
+    <string name="prevButtonRus">Назад</string>
+    <string name="finishButtonRus">Закончить</string>
+    <string name="sendQuestion">Отправить вопрос или решение</string>
+    <string name="showSolutionRus">Решение</string>
+
+
+
+    <!--Titles-->
+    <string name="title_activity_available_subjects">Варианты с решениями</string>
+    <string name="title_activity_main">Выберите предмет</string>
+
+
+    <!--Variants-->
+    <string-array name="local_physics_links">
+        <item> file:///android_asset/html/ent_physics_1.html</item>
+        <item> file:///android_asset/html/ent_physics_2.html</item>
+
+    </string-array>
+
+    <string-array name="local_physics_titles">
+        <item> Задачи с решениями (1-25)</item>
+        <item> Задачи с решениями (26-50)</item>
+
+
+    </string-array>
+
+
+    <string-array name="local_maths_links">
+        <item> file:///android_asset/html/ent_maths_1.html</item>
+        <item> file:///android_asset/html/ent_maths_2.html</item>
+    </string-array>
+
+    <string-array name="local_maths_titles">
+        <item> Задачи с решениями (1-25)</item>
+        <item> Задачи с решениями (26-50)</item>
+
+    </string-array>
+
+    <string-array name="local_chemistry_links">
+
+    </string-array>
+
+    <string-array name="local_chemistry_titles">
+
+    </string-array>
+    <string name="title_activity_main_tabbed">Главное</string>
+
+
+
+    <!--Errors-->
+    <string name="no_internet_warning">Пожалуйста включите интернет для загрузки вариантов</string>
+
+
+
+
+
+    <string name="physics">Физика</string>
+    <string name="maths">Математика</string>
+    <string name="title_activity_about_us">О нас</string>
+
+    <string name="wifi_connection">The active connection is wifi.</string>
+    <string name="mobile_connection">The active connection is mobile.</string>
+    <string name="no_wifi_or_mobile">No wireless or mobile connection.</string>
+
+
+</resources>

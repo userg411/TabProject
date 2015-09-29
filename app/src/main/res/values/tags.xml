@@ -1,0 +1,7 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <item name="SUBJECT_ID" type="id"/>
+    <item name="VARIANT_ID" type="id"/>
+    <item name="VARIANT_LINK" type="id"/>
+    <item name="VARIANT_TITLE" type="id"/>
+    <item name="LOCAL_CONTENT" type="id"/>
+</resources>
