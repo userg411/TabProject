@@ -259,7 +259,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
                     b.setTag(R.id.VARIANT_TITLE, variantTitles.get(i));
                     b.setTag(R.id.LOCAL_CONTENT, "false");
                     variantsLayout.addView(b);
-                    FileStore f = new FileStore();
+                    FileStore f = new FileStore(getActivity());
                     f.copyFromUrl(variantLinks.get(i), "myfile.html",getActivity());
 
                 }

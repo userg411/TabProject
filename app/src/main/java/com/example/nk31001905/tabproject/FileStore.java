@@ -7,29 +7,22 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import android.content.Context;
-
+import android.os.AsyncTask;
 /**
  * Created by nk91008743 on 28/Sep/15.
  */
 public class FileStore {
+    private static Context context;
     private static final String TAG = "FILESTORE";
+
+    public FileStore(Context c){
+        this.context = c;
+    }
+
+
     public  void copyFromUrl(String url, String file, Context c)
     {
-        try {
-            //System.setProperty("java.net.useSystemProxies", "true");
-            URL website = new URL("http://www.azh.kz");
-            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
-            Log.i(TAG, "channel is open"+rbc.isOpen());
-            FileOutputStream fos = c.openFileOutput("information", c.MODE_PRIVATE);
-            //FileOutputStream fos = new FileOutputStream("information.html");
-            fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-            Log.i( TAG,"Wrote to file");
-        }
-        catch(Exception e)
-        {
-            String err = (e.getMessage()==null)?"Write Failed":e.getMessage();
-            Log.i(TAG,err);
-        }
+        new copyFromUrl().execute("");
     }
     public  void writeToFile(Context c){
         FileOutputStream outputStream;
@@ -42,6 +35,35 @@ public class FileStore {
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    class copyFromUrl extends AsyncTask<String, Void, Void> {
+
+
+        private Exception exception;
+        protected Void doInBackground(String... urls) {
+            try {
+                URL website = new URL("http://www.nur.kz/906396-voditeley-ustroivshikh-drift-shou-v-alma.html");
+                ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+                FileOutputStream fos = context.openFileOutput("information2.html", Context.MODE_PRIVATE);
+                //FileOutputStream fos = new FileOutputStream("information.html");
+                fos.getChannel().transferFrom(rbc, 0, 1024);
+                Log.i(TAG, "Wrote to file");
+
+            } catch (Exception e) {
+                this.exception = e;
+                Log.e(TAG,Log.getStackTraceString(e));
+
+
+            }
+            return null;
+        }
+
+        protected void onPostExecute() {
+            // TODO: check this.exception
+            // TODO: do something with the feed
         }
     }
 
