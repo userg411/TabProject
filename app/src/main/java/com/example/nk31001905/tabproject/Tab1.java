@@ -91,7 +91,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
         filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
 
-        displayVariants();
+        initializeVariants();
 
         return v;
     }
@@ -114,7 +114,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
         }
     }
 
-    public void displayVariants() {
+    public void initializeVariants() {
         variants.clear();
         variantsLayout.removeAllViews();
 
@@ -125,20 +125,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
             String link = Arrays.asList(getResources().getStringArray(R.array.local_physics_links)).get(i);
             variants.add(new Variant(shippedVariants[i], title, link,true));
         }
-        //variantLinks.addAll(Arrays.asList(getResources().getStringArray(R.array.local_physics_links)));
-        //variantTitles.addAll(Arrays.asList(getResources().getStringArray(R.array.local_physics_titles)));
-        localVariantsNum=variantLinks.size();
 
-        for (int i = 0; i < variantLinks.size(); i++) {
-            Button b = new Button(getActivity());
-            b.setText(variantTitles.get(i));
-            b.setLayoutParams(param);
-            b.setOnClickListener(handleOnClick(b));
-            b.setTag(R.id.VARIANT_LINK, variantLinks.get(i));
-            b.setTag(R.id.VARIANT_TITLE, variantTitles.get(i));
-            b.setTag(R.id.LOCAL_CONTENT, "true");
-            variantsLayout.addView(b);
-        }
         if(getActivity().getFilesDir().list().length>0){
             String startId = getString(R.string.start_id_physics);
             int counter = Integer.parseInt(startId.substring(1));
@@ -158,9 +145,22 @@ public class Tab1 extends Fragment implements View.OnClickListener{
         else
         {
             Toast.makeText(getActivity(), R.string.no_internet_warning, Toast.LENGTH_SHORT).show();
+            displayVariants();
         }
 
 
+    }
+    public void displayVariants(){
+        for (int i = 0; i < variants.size(); i++) {
+            Button b = new Button(getActivity());
+            b.setText(variants.get(i).title);
+            b.setLayoutParams(param);
+            b.setOnClickListener(handleOnClick(b));
+            b.setTag(R.id.VARIANT_LINK, variants.get(i).link);
+            b.setTag(R.id.VARIANT_TITLE,variants.get(i).title);
+            b.setTag(R.id.LOCAL_CONTENT, "true");
+            variantsLayout.addView(b);
+        }
     }
 
     View.OnClickListener handleOnClick(final Button button) {
@@ -248,6 +248,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
                         f.copyFromUrl(link.getTextContent(), "p"+title+".html", getActivity());
                         variants.add(v);
                     }
+                    displayVariants();
 
                 }
             } catch (ParserConfigurationException e) {
