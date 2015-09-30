@@ -62,7 +62,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     static final int SEND_MAIL_REQUEST = 1;
 
     private String subject = "physics";
-    ArrayList<String> variantLinks;
+    ArrayList<Variant> variants;
     ProgressDialog progressDialog;
     private Button sendMailButton;
 
@@ -80,25 +80,20 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        variantLinks = new ArrayList<String>();
-        variantTitles = new ArrayList<String>();
+        variants = new ArrayList<Variant>();
 
-        View v =inflater.inflate(R.layout.tab_1,container,false);
-        sendMailButton =(Button)v.findViewById(R.id.sendQuestion);
+        View v = inflater.inflate(R.layout.tab_1, container, false);
+        sendMailButton = (Button) v.findViewById(R.id.sendQuestion);
         sendMailButton.setOnClickListener(this);
         variantsLayout = (LinearLayout) v.findViewById(R.id.variantsLayout);
-        param = new LinearLayout.LayoutParams( LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         param.setMargins(0, 0, 0, -10);
-
         filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         receiver = new NetworkChangeReceiver();
-
-
 
         displayVariants();
 
         return v;
-
     }
 
 
@@ -120,13 +115,18 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     }
 
     public void displayVariants() {
-        variantLinks.clear();
-        variantTitles.clear();
+        variants.clear();
         variantsLayout.removeAllViews();
 
+        String [] shippedVariants = getResources().getStringArray(R.array.local_physics_ids);
 
-        variantLinks.addAll(Arrays.asList(getResources().getStringArray(R.array.local_physics_links)));
-        variantTitles.addAll(Arrays.asList(getResources().getStringArray(R.array.local_physics_titles)));
+        for(int i=0; i<shippedVariants.length;i++){
+            String title = Arrays.asList(getResources().getStringArray(R.array.local_physics_titles)).get(i);
+            String link = Arrays.asList(getResources().getStringArray(R.array.local_physics_links)).get(i);
+            variants.add(new Variant(shippedVariants[i], title, link,true));
+        }
+        //variantLinks.addAll(Arrays.asList(getResources().getStringArray(R.array.local_physics_links)));
+        //variantTitles.addAll(Arrays.asList(getResources().getStringArray(R.array.local_physics_titles)));
         localVariantsNum=variantLinks.size();
 
         for (int i = 0; i < variantLinks.size(); i++) {
@@ -140,29 +140,27 @@ public class Tab1 extends Fragment implements View.OnClickListener{
             variantsLayout.addView(b);
         }
         if(getActivity().getFilesDir().list().length>0){
+            String startId = getString(R.string.start_id_physics);
+            int counter = Integer.parseInt(startId.substring(1));
+            String id,title, link;
             String[] listOfFiles = getActivity().getFilesDir().list();
             for(String fileName:listOfFiles){
-                Button b = new Button(getActivity());
-                b.setText(fileName);
-                b.setLayoutParams(param);
-                b.setOnClickListener(handleOnClick(b));
-                b.setTag(R.id.VARIANT_LINK, fileName);
-                b.setTag(R.id.VARIANT_TITLE, fileName);
-                b.setTag(R.id.LOCAL_CONTENT, "true");
-                variantsLayout.addView(b);
+                id = "p"+counter;
+                title = fileName;
+                link ="file:///data/data/com.example.example.nk31001905.tabproject/files/"+fileName;
+                variants.add(new Variant(id, title, link, true));
             }
         }
 
         if (isNetworkAvailable()) {
             new XmlParser().execute();
-            gotFromServer = true;
         }
         else
         {
             Toast.makeText(getActivity(), R.string.no_internet_warning, Toast.LENGTH_SHORT).show();
         }
 
-        Log.i("links size", "" + variantLinks.size());
+
     }
 
     View.OnClickListener handleOnClick(final Button button) {
@@ -234,30 +232,24 @@ public class Tab1 extends Fragment implements View.OnClickListener{
 
                 for (int i = 0; i < nodes.getLength(); i++) {
                     Element element = (Element) nodes.item(i);
-                    NodeList title = element.getElementsByTagName("link");
-                    Element line = (Element) title.item(0);
 
-                    NodeList title1 = element.getElementsByTagName("title");
-                    Element line1 = (Element) title1.item(0);
-                    variantLinks.add(line.getTextContent());
-                    variantTitles.add(line1.getTextContent());
+                    NodeList NodeId = element.getElementsByTagName("id");
+                    Element id = (Element) NodeId.item(0);
 
-                }
-                for (int i = localVariantsNum; i < variantLinks.size(); i++) {
-                    Button b = new Button(getActivity());
-                    b.setText(variantTitles.get(i));
-                    b.setLayoutParams(param);
-                    b.setOnClickListener(handleOnClick(b));
-                    b.setTag(R.id.VARIANT_LINK, variantLinks.get(i));
-                    b.setTag(R.id.VARIANT_TITLE, variantTitles.get(i));
-                    b.setTag(R.id.LOCAL_CONTENT, "false");
-                    variantsLayout.addView(b);
-                    FileStore f = new FileStore(getActivity());
-                    f.listFiles();
-                    f.copyFromUrl(variantLinks.get(i), "p"+variantTitles.get(i)+".html", getActivity());
+                    NodeList NodeLink = element.getElementsByTagName("link");
+                    Element link = (Element) NodeLink.item(0);
+
+                    NodeList NodeTitle = element.getElementsByTagName("title");
+                    Element title = (Element) NodeTitle.item(0);
+
+                    Variant v = new Variant(id.getTextContent(), title.getTextContent(), link.getTextContent(), false);
+                    if(!variants.contains(v)){
+                        FileStore f = new FileStore(getActivity());
+                        f.copyFromUrl(link.getTextContent(), "p"+title+".html", getActivity());
+                        variants.add(v);
+                    }
 
                 }
-
             } catch (ParserConfigurationException e) {
                 e.printStackTrace();
             } catch (SAXException e) {
