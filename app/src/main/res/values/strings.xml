@@ -75,5 +75,7 @@
     <string name="mobile_connection">The active connection is mobile.</string>
     <string name="no_wifi_or_mobile">No wireless or mobile connection.</string>
 
+    <string name="g_drive_link">http://googledrive.com/host/0B0JEvlvBHGYNM2k2aHgyV2F2LUk/links.xml</string>
+
 
 </resources>

@@ -1,5 +1,6 @@
-package com.example.nk31001905.tabproject;
-
+ package com.example.nk31001905.tabproject;
+ import com.example.nk31001905.tabproject.util.FileStore;
+ import com.example.nk31001905.tabproject.util.Email;
 /**
  * Created by nk31001905 on 12/May/15.
  */
@@ -17,8 +18,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -48,6 +47,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+
+
 /**
  * Created by Edwin on 15/02/2015.
  */
@@ -59,7 +60,6 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     private static boolean networkConnected=false;
 
     static final int SEND_MAIL_REQUEST = 1;
-    static final String GOOGLE_DRIVE_LINK = "http://googledrive.com/host/0B0JEvlvBHGYNM2k2aHgyV2F2LUk/links.xml";
 
     private String subject = "physics";
     ArrayList<String> variantLinks;
@@ -114,7 +114,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
     {
         switch(v.getId()){
             case R.id.sendQuestion:
-                sendEmail(v);
+                Email.sendEmail(v,getActivity());
                 break;
         }
     }
@@ -138,10 +138,21 @@ public class Tab1 extends Fragment implements View.OnClickListener{
             b.setTag(R.id.VARIANT_TITLE, variantTitles.get(i));
             b.setTag(R.id.LOCAL_CONTENT, "true");
             variantsLayout.addView(b);
-
+        }
+        if(getActivity().getFilesDir().list().length>0){
+            String[] listOfFiles = getActivity().getFilesDir().list();
+            for(String fileName:listOfFiles){
+                Button b = new Button(getActivity());
+                b.setText(fileName);
+                b.setLayoutParams(param);
+                b.setOnClickListener(handleOnClick(b));
+                b.setTag(R.id.VARIANT_LINK, fileName);
+                b.setTag(R.id.VARIANT_TITLE, fileName);
+                b.setTag(R.id.LOCAL_CONTENT, "true");
+                variantsLayout.addView(b);
+            }
         }
 
-        Toast.makeText(getActivity(), "Network issss" + isNetworkAvailable(), Toast.LENGTH_SHORT).show();
         if (isNetworkAvailable()) {
             new XmlParser().execute();
             gotFromServer = true;
@@ -158,6 +169,9 @@ public class Tab1 extends Fragment implements View.OnClickListener{
         return new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SingleQuestion.class);
+                String link = (String) button.getTag(R.id.VARIANT_LINK);
+                if(!link.startsWith("file"))
+                    link = "file:///data/data/com.example.example.nk31001905.tabproject/files/"+link;
                 intent.putExtra("variant_link", (String) button.getTag(R.id.VARIANT_LINK));
                 intent.putExtra("variant_title",(String)( button.getTag(R.id.VARIANT_TITLE)));
                 if(button.getTag(R.id.LOCAL_CONTENT).equals("true")||isNetworkAvailable())
@@ -170,28 +184,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
         };
     }
 
-
-    public void sendEmail(View v) {
-        String[] TO = {"userg411@gmail.com"};
-        Intent emailIntent = new Intent(Intent.ACTION_SEND);
-        emailIntent.setData(Uri.parse("mailto:"));
-        emailIntent.setType("text/plain");
-
-
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
-
-        try {
-            //startActivityForResult(Intent.createChooser(emailIntent, "Send mail..."), SEND_MAIL_REQUEST);
-            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
-            Log.i("Finished sending email.", "");
-        } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getActivity(),
-                    "There is no email client installed.", Toast.LENGTH_SHORT).show();
-        }
-    }
-    /*public void onPause() {
+ /*public void onPause() {
         unregisterReceiver(receiver);
     }
     */
@@ -205,7 +198,7 @@ public class Tab1 extends Fragment implements View.OnClickListener{
             try {
                 // defaultHttpClient
                 HttpClient client = new DefaultHttpClient();
-                HttpGet get = new HttpGet(GOOGLE_DRIVE_LINK);
+                HttpGet get = new HttpGet(getString(R.string.g_drive_link));
                 ResponseHandler<String> responseHandler = new BasicResponseHandler();
                 xml = client.execute(get, responseHandler);
 
@@ -260,7 +253,8 @@ public class Tab1 extends Fragment implements View.OnClickListener{
                     b.setTag(R.id.LOCAL_CONTENT, "false");
                     variantsLayout.addView(b);
                     FileStore f = new FileStore(getActivity());
-                    f.copyFromUrl(variantLinks.get(i), "myfile.html",getActivity());
+                    f.listFiles();
+                    f.copyFromUrl(variantLinks.get(i), "p"+variantTitles.get(i)+".html", getActivity());
 
                 }
 
