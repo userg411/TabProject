@@ -54,9 +54,13 @@ public class SingleQuestion extends Activity {
         questionWebView = (WebView) findViewById(R.id.webview);
         questionWebView.getSettings().setJavaScriptEnabled(true);
 
-
-        //questionTitle = (TextView) findViewById(R.id.questionTitle);
-
+        questionWebView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+        questionWebView.setLongClickable(false);
 
 
         Intent intent = getIntent();

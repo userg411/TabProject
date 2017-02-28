@@ -1,6 +1,4 @@
 package com.example.nk31001905.tabproject;
-import com.example.nk31001905.tabproject.util.FileStore;
-import com.example.nk31001905.tabproject.util.Email;
 
 /**
  * Created by nk31001905 on 12/May/15.
@@ -56,7 +54,7 @@ import javax.xml.parsers.ParserConfigurationException;
 public class Tab2 extends Fragment implements View.OnClickListener{
 
     static final int SEND_MAIL_REQUEST = 1;
-    static final String GOOGLE_DRIVE_LINK = "http://googledrive.com/host/0B0JEvlvBHGYNM2k2aHgyV2F2LUk/links_maths.xml";
+    static final String GOOGLE_DRIVE_LINK = "https://drive.google.com/open?id=0B0JEvlvBHGYNZ3JXNmhJNTdIODQ";
 
     private String subject = "maths";
     ArrayList<String> variantLinks;
@@ -111,7 +109,7 @@ public class Tab2 extends Fragment implements View.OnClickListener{
     {
         switch(v.getId()){
             case R.id.sendQuestion:
-                Email.sendEmail(v,getActivity());
+                sendEmail(v);
                 break;
         }
     }
@@ -168,7 +166,26 @@ public class Tab2 extends Fragment implements View.OnClickListener{
     }
 
 
+    public void sendEmail(View v) {
+        String[] TO = {"userg411@gmail.com"};
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
 
+
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+
+        try {
+            //startActivityForResult(Intent.createChooser(emailIntent, "Send mail..."), SEND_MAIL_REQUEST);
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            Log.i("Finished sending email.", "");
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getActivity(),
+                    "There is no email client installed.", Toast.LENGTH_SHORT).show();
+        }
+    }
     /*public void onPause() {
         unregisterReceiver(receiver);
     }

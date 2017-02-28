@@ -24,13 +24,10 @@
 
 
     <!--Variants-->
-    <string-array name="local_physics_ids">
-        <item> p1</item>
-        <item> p2</item>
-    </string-array>
     <string-array name="local_physics_links">
         <item> file:///android_asset/html/ent_physics_1.html</item>
         <item> file:///android_asset/html/ent_physics_2.html</item>
+
     </string-array>
 
     <string-array name="local_physics_titles">
@@ -78,7 +75,5 @@
     <string name="mobile_connection">The active connection is mobile.</string>
     <string name="no_wifi_or_mobile">No wireless or mobile connection.</string>
 
-    <string name="g_drive_link">http://googledrive.com/host/0B0JEvlvBHGYNM2k2aHgyV2F2LUk/links.xml</string>
-    <string name="start_id_physics">p3</string>
 
 </resources>
