@@ -6,6 +6,17 @@
 
     <include android:id="@+id/footer" layout="@layout/email_footer"/>
 
+    <!--
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Tab 1 says Hello :D"
+        android:id="@+id/textView"
+        android:textColor="@color/tabsScrollColor"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+        -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
